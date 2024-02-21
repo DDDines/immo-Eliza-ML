@@ -48,11 +48,12 @@ def predict(input_dataset, output_dataset):
 
     # Make predictions
     predictions = model.predict(data)
-    predictions = predictions[:10]  # just picking 10 to display sample output :-)
+   # predictions = predictions[:10]  # just picking 10 to display sample output :-)
 
     ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###
     # Save the predictions to a CSV file (in order of data input!)
-    pd.DataFrame({"predictions": predictions}).to_csv(output_dataset, index=False)
+    pd.DataFrame({"predictions": predictions}).to_csv(
+        output_dataset, index=False)
 
     # Print success messages
     click.echo(click.style("Predictions generated successfully!", fg="green"))

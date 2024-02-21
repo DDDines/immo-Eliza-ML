@@ -1,21 +1,56 @@
 import joblib
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
+from visualization import plot_predictions
 
 
-def train():
+def train(data):
     """Trains a linear regression model on the full dataset and stores output."""
+
     # Load the data
-    data = pd.read_csv("data/properties.csv")
+    data = data
 
     # Define features to use
-    num_features = ["nbr_frontages"]
-    fl_features = ["fl_terrace"]
-    cat_features = ["equipped_kitchen"]
+    num_features = [
+        "nbr_frontages",
+        "nbr_bedrooms",
+        "latitude",
+        "longitude",
+        "total_area_sqm",
+        "surface_land_sqm",
+        "terrace_sqm",
+        "garden_sqm",
+        "construction_year",
+        "primary_energy_consumption_sqm",
+        "cadastral_income"
+    ]
+
+    fl_features = [
+        "fl_furnished",
+        "fl_open_fire",
+        "fl_terrace",
+        "fl_garden",
+        "fl_swimming_pool",
+        "fl_floodzone",
+        "fl_double_glazing"
+    ]
+
+    cat_features = [
+        "property_type",
+        "subproperty_type",
+        "region",
+        "province",
+        "locality",
+        "equipped_kitchen",
+        "state_building",
+        "epc",
+        "heating_type"
+    ]
 
     # Split the data into features and target
     X = data[num_features + fl_features + cat_features]
@@ -61,11 +96,18 @@ def train():
     model = LinearRegression()
     model.fit(X_train, y_train)
 
+    y_train_pred = model.predict(X_train)
+    y_test_pred = model.predict(X_test)
+
     # Evaluate the model
-    train_score = r2_score(y_train, model.predict(X_train))
-    test_score = r2_score(y_test, model.predict(X_test))
+    train_score = r2_score(y_train, y_train_pred)
+    test_score = r2_score(y_test, y_test_pred)
     print(f"Train R² score: {train_score}")
     print(f"Test R² score: {test_score}")
+
+    plot_predictions(y_train, y_train_pred, dataset_type='Training')
+
+    plot_predictions(y_test, y_test_pred, dataset_type='Testing')
 
     # Save the model
     artifacts = {
