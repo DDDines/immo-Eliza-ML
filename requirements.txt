@@ -4,3 +4,5 @@ Pyarrow
 numpy
 scikit-learn
 joblib
+
+teste Julio
