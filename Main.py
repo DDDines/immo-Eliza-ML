@@ -1,5 +1,7 @@
 import pandas as pd
 from train import train
+from visualization import plot_actual_vs_predicted
+from visualization import plot_residuals_histogram
 
 data = pd.read_csv("data/properties.csv")
 
@@ -35,4 +37,12 @@ if __name__ == "__main__":
         # Atualizar 'data' após remover outliers de cada coluna
         data = outliers(data, column)
 
-    train(data)
+    y_train, y_train_pred, y_test, y_test_pred = train(data)
+
+    # Plotting for Training Dataset
+    plot_actual_vs_predicted(y_train, y_train_pred, "Training")
+    plot_residuals_histogram(y_train, y_train_pred, "Training")
+
+    # Plotting for Testing Dataset
+    plot_actual_vs_predicted(y_test, y_test_pred, "Testing")
+    plot_residuals_histogram(y_test, y_test_pred, "Testing")

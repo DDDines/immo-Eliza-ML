@@ -2,14 +2,22 @@
 import matplotlib.pyplot as plt
 
 
-def plot_predictions(y_true, y_pred, dataset_type='Training'):
-    plt.figure(figsize=(10, 8))
-    plt.scatter(y_true, y_pred, alpha=0.3,
-                label=f'{dataset_type} data')
-    plt.plot([y_true.min(), y_true.max()], [y_true.min(),
-             y_true.max()], 'k--', lw=4, label='Ideal')
-    plt.xlabel('Actual Price')
-    plt.ylabel('Predicted Price')
-    plt.title(f'{dataset_type} Data: Actual vs Predicted Prices')
-    plt.legend()
+def plot_actual_vs_predicted(y_actual, y_predicted, dataset_type="Training"):
+    plt.figure(figsize=(10, 6))
+    plt.scatter(y_actual, y_predicted, alpha=0.3)
+    plt.title(f"{dataset_type} Dataset: Actual vs. Predicted Prices")
+    plt.xlabel("Actual Prices")
+    plt.ylabel("Predicted Prices")
+    plt.plot([y_actual.min(), y_actual.max()], [
+             y_actual.min(), y_actual.max()], 'k--', lw=4)
+    plt.show()
+
+
+def plot_residuals_histogram(y_actual, y_predicted, dataset_type="Training"):
+    residuals = y_actual - y_predicted
+    plt.figure(figsize=(10, 6))
+    plt.hist(residuals, bins=20, edgecolor='black')
+    plt.title(f"{dataset_type} Dataset: Distribution of Residuals")
+    plt.xlabel("Residuals")
+    plt.ylabel("Frequency")
     plt.show()

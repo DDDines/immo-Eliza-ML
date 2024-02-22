@@ -1,12 +1,14 @@
 import joblib
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
-from visualization import plot_predictions
+# from visualization import plot_predictions
+from sklearn.preprocessing import PolynomialFeatures
 
 
 def train(data):
@@ -92,22 +94,46 @@ def train(data):
 
     print(f"Features: \n {X_train.columns.tolist()}")
 
+    ''' POLYNOMIAL TEST'''
+    poly_features = PolynomialFeatures(degree=3, include_bias=False)
+
+    X_train_poly = poly_features.fit_transform(X_train[num_features])
+    X_test_poly = poly_features.transform(X_test[num_features])
+
+    X_train_poly = pd.concat(
+        [
+            pd.DataFrame(
+                X_train_poly, columns=poly_features.get_feature_names_out(num_features)),
+            X_train[fl_features].reset_index(drop=True),
+            pd.DataFrame(X_train_cat, columns=enc.get_feature_names_out())
+        ],
+        axis=1,
+    )
+
+    X_test_poly = pd.concat(
+        [
+            pd.DataFrame(
+                X_test_poly, columns=poly_features.get_feature_names_out(num_features)),
+            X_test[fl_features].reset_index(drop=True),
+            pd.DataFrame(X_test_cat, columns=enc.get_feature_names_out())
+        ],
+        axis=1,
+    )
+
+    ''' POLYNOMIAL TEST '''
+
     # Train the model
     model = LinearRegression()
-    model.fit(X_train, y_train)
+    model.fit(X_train_poly, y_train)
 
-    y_train_pred = model.predict(X_train)
-    y_test_pred = model.predict(X_test)
+    y_train_pred = model.predict(X_train_poly)
+    y_test_pred = model.predict(X_test_poly)
 
     # Evaluate the model
     train_score = r2_score(y_train, y_train_pred)
     test_score = r2_score(y_test, y_test_pred)
     print(f"Train R² score: {train_score}")
     print(f"Test R² score: {test_score}")
-
-    plot_predictions(y_train, y_train_pred, dataset_type='Training')
-
-    plot_predictions(y_test, y_test_pred, dataset_type='Testing')
 
     # Save the model
     artifacts = {
@@ -122,6 +148,4 @@ def train(data):
     }
     joblib.dump(artifacts, "models/artifacts.joblib")
 
-
-if __name__ == "__main__":
-    train()
+    return y_train, y_train_pred, y_test, y_test_pred
