@@ -40,8 +40,8 @@ def train(data):
     ]
 
     cat_features = [
-        "property_type",
-        "subproperty_type",
+        # "property_type",
+        # "subproperty_type",
         "region",
         "province",
         "locality",
