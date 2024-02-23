@@ -29,8 +29,6 @@ def predict(input_dataset, output_dataset):
     imputer = artifacts["imputer"]
     enc = artifacts["enc"]
     model = artifacts["model"]
-    # Load PolynomialFeatures transformer
-    poly = artifacts["poly"]
 
     # Extract the used data
     data = data[num_features + fl_features + cat_features]
@@ -39,17 +37,10 @@ def predict(input_dataset, output_dataset):
     data[num_features] = imputer.transform(data[num_features])
     data_cat = enc.transform(data[cat_features]).toarray()
 
-    # Generate polynomial features
-    data_poly = poly.transform(data[num_features])
-
-    # Convert to DataFrame with correct feature names
-    data_poly = pd.DataFrame(data_poly, columns=poly.get_feature_names_out())
-
     # Combine the numerical and one-hot encoded categorical columns
     data = pd.concat(
         [
-            data_poly.reset_index(drop=True),
-            data[fl_features].reset_index(drop=True),
+            data[num_features + fl_features].reset_index(drop=True),
             pd.DataFrame(data_cat, columns=enc.get_feature_names_out()),
         ],
         axis=1,
@@ -57,7 +48,8 @@ def predict(input_dataset, output_dataset):
 
     # Make predictions
     predictions = model.predict(data)
-   # predictions = predictions[:10]  # just picking 10 to display sample output :-)
+    # just picking 10 to display sample output :-)
+    predictions = predictions[:10]
 
     ### -------- DO NOT TOUCH THE FOLLOWING LINES -------- ###
     # Save the predictions to a CSV file (in order of data input!)

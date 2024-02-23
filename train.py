@@ -1,22 +1,16 @@
 import joblib
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
-# from visualization import plot_predictions
-from sklearn.preprocessing import PolynomialFeatures
 
 
 def train(data):
     """Trains a linear regression model on the full dataset and stores output."""
 
-    # Load the data
-    data = data
-
+    # Define features to use
     # Define features to use
     num_features = [
         "nbr_frontages",
@@ -43,8 +37,8 @@ def train(data):
     ]
 
     cat_features = [
-        "property_type",
-        "subproperty_type",
+        # "property_type",
+        # "subproperty_type",
         "region",
         "province",
         "locality",
@@ -70,7 +64,7 @@ def train(data):
     X_test[num_features] = imputer.transform(X_test[num_features])
 
     # Convert categorical columns with one-hot encoding using OneHotEncoder
-    enc = OneHotEncoder(handle_unknown="ignore")
+    enc = OneHotEncoder()
     enc.fit(X_train[cat_features])
     X_train_cat = enc.transform(X_train[cat_features]).toarray()
     X_test_cat = enc.transform(X_test[cat_features]).toarray()
@@ -98,12 +92,9 @@ def train(data):
     model = LinearRegression()
     model.fit(X_train, y_train)
 
-    y_train_pred = model.predict(X_train)
-    y_test_pred = model.predict(X_test)
-
     # Evaluate the model
-    train_score = r2_score(y_train, y_train_pred)
-    test_score = r2_score(y_test, y_test_pred)
+    train_score = r2_score(y_train, model.predict(X_train))
+    test_score = r2_score(y_test, model.predict(X_test))
     print(f"Train R² score: {train_score}")
     print(f"Test R² score: {test_score}")
 
@@ -120,4 +111,6 @@ def train(data):
     }
     joblib.dump(artifacts, "models/artifacts.joblib")
 
-    return y_train, y_train_pred, y_test, y_test_pred
+
+if __name__ == "__main__":
+    train()
