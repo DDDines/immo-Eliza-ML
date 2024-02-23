@@ -147,4 +147,5 @@ def train(data):
     }
     joblib.dump(artifacts, "models/artifacts.joblib")
     print(artifacts.keys())
+
     return y_train, y_train_pred, y_test, y_test_pred
