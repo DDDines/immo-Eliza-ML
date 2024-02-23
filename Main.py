@@ -2,7 +2,7 @@ import pandas as pd
 from train import train
 import polynominal
 from visualization import plot_actual_vs_predicted
-
+from predict_ import predict
 
 data = pd.read_csv("data/properties.csv")
 
@@ -49,3 +49,10 @@ if __name__ == "__main__":
     # Plotting for Testing Dataset
     plot_actual_vs_predicted(y_test, y_test_pred, "Testing")
     # plot_residuals_histogram(y_test, y_test_pred, "Testing")
+
+    predict()
+
+    pred = pd.read_csv("output\predictions.csv")
+    property = pd.read_csv("data/properties.csv")
+
+    plot_actual_vs_predicted(pred["predictions"], property["price"])
