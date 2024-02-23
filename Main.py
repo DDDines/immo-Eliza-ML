@@ -1,7 +1,8 @@
 import pandas as pd
 from train import train
+import polynominal
 from visualization import plot_actual_vs_predicted
-from visualization import plot_residuals_histogram
+
 
 data = pd.read_csv("data/properties.csv")
 
@@ -33,16 +34,18 @@ def outliers(data, column, lower_bound_multiplier=1.5, upper_bound_multiplier=1.
 if __name__ == "__main__":
     # Iterar apenas por colunas numéricas
     numeric_cols = data.select_dtypes(include=['number']).columns
+    # data = clean_and_standardize_data(data)
+
     for column in numeric_cols:
         # Atualizar 'data' após remover outliers de cada coluna
         data = outliers(data, column)
 
-    y_train, y_train_pred, y_test, y_test_pred = train(data)
+    y_train, y_train_pred, y_test, y_test_pred = polynominal.train(data)
 
     # Plotting for Training Dataset
     plot_actual_vs_predicted(y_train, y_train_pred, "Training")
-    plot_residuals_histogram(y_train, y_train_pred, "Training")
+    # plot_residuals_histogram(y_train, y_train_pred, "Training")
 
     # Plotting for Testing Dataset
     plot_actual_vs_predicted(y_test, y_test_pred, "Testing")
-    plot_residuals_histogram(y_test, y_test_pred, "Testing")
+    # plot_residuals_histogram(y_test, y_test_pred, "Testing")

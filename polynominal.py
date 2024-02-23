@@ -1,13 +1,10 @@
 import joblib
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
-# from visualization import plot_predictions
 from sklearn.preprocessing import PolynomialFeatures
 
 
@@ -94,12 +91,41 @@ def train(data):
 
     print(f"Features: \n {X_train.columns.tolist()}")
 
+    ''' POLYNOMIAL TEST'''
+    poly_features = PolynomialFeatures(degree=3, include_bias=False)
+
+    X_train_poly = poly_features.fit_transform(X_train[num_features])
+    X_test_poly = poly_features.transform(X_test[num_features])
+
+    X_train_poly = pd.concat(
+        [
+            pd.DataFrame(
+                X_train_poly, columns=poly_features.get_feature_names_out(num_features)),
+            X_train[fl_features].reset_index(drop=True),
+            pd.DataFrame(X_train_cat, columns=enc.get_feature_names_out())
+        ],
+        axis=1,
+    )
+
+    X_test_poly = pd.concat(
+        [
+            pd.DataFrame(
+                X_test_poly, columns=poly_features.get_feature_names_out(num_features)),
+            X_test[fl_features].reset_index(drop=True),
+            pd.DataFrame(X_test_cat, columns=enc.get_feature_names_out())
+        ],
+        axis=1,
+    )
+
+    something = enc.get_feature_names_out()
+    print(something)
+
     # Train the model
     model = LinearRegression()
-    model.fit(X_train, y_train)
+    model.fit(X_train_poly, y_train)
 
-    y_train_pred = model.predict(X_train)
-    y_test_pred = model.predict(X_test)
+    y_train_pred = model.predict(X_train_poly)
+    y_test_pred = model.predict(X_test_poly)
 
     # Evaluate the model
     train_score = r2_score(y_train, y_train_pred)
@@ -109,15 +135,16 @@ def train(data):
 
     # Save the model
     artifacts = {
-        "features": {
-            "num_features": num_features,
-            "fl_features": fl_features,
-            "cat_features": cat_features,
-        },
-        "imputer": imputer,
-        "enc": enc,
-        "model": model,
+        'poly': poly_features,  # O transformador de características polinomiais
+        'model': model,         # O modelo de regressão linear
+        'imputer': imputer,     # O imputador para tratar valores ausentes
+        'encoder': enc,         # O codificador one-hot
+        'features': {           # Um dicionário das listas de características
+            'num_features': num_features,
+            'fl_features': fl_features,
+            'cat_features': cat_features,
+        }
     }
     joblib.dump(artifacts, "models/artifacts.joblib")
-
+    print(artifacts.keys())
     return y_train, y_train_pred, y_test, y_test_pred
