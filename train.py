@@ -11,7 +11,6 @@ def train(data):
     """Trains a linear regression model on the full dataset and stores output."""
 
     # Define features to use
-    # Define features to use
     num_features = [
         "nbr_frontages",
         "nbr_bedrooms",
