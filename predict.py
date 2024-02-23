@@ -27,7 +27,7 @@ def predict(input_dataset, output_dataset):
     fl_features = artifacts["features"]["fl_features"]
     cat_features = artifacts["features"]["cat_features"]
     imputer = artifacts["imputer"]
-    enc = artifacts["encoder"]
+    enc = artifacts["enc"]
     model = artifacts["model"]
     # Load PolynomialFeatures transformer
     poly = artifacts["poly"]

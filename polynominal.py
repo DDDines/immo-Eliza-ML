@@ -138,7 +138,7 @@ def train(data):
         'poly': poly_features,  # O transformador de características polinomiais
         'model': model,         # O modelo de regressão linear
         'imputer': imputer,     # O imputador para tratar valores ausentes
-        'encoder': enc,         # O codificador one-hot
+        'enc': enc,         # O codificador one-hot
         'features': {           # Um dicionário das listas de características
             'num_features': num_features,
             'fl_features': fl_features,

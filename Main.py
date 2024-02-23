@@ -50,9 +50,9 @@ if __name__ == "__main__":
     plot_actual_vs_predicted(y_test, y_test_pred, "Testing")
     # plot_residuals_histogram(y_test, y_test_pred, "Testing")
 
-    predict()
+    # predict()
 
-    pred = pd.read_csv("output\predictions.csv")
-    property = pd.read_csv("data/properties.csv")
+    # pred = pd.read_csv("output\predictions.csv")
+   # property = pd.read_csv("data/properties.csv")
 
-    plot_actual_vs_predicted(pred["predictions"], property["price"])
+   # plot_actual_vs_predicted(pred["predictions"], property["price"])
